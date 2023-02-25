@@ -8,7 +8,7 @@
 
 ### Dynamodb local
 
-![Dynamodb local](assets/week-01/dynamodb.png)
+![Dynamodb local](assets/week-01/dynamodb-local.png)
 
 ### Postgres
 
