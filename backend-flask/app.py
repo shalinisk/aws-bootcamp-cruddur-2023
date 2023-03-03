@@ -22,6 +22,15 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter, SimpleSpanProcessor
 
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+
+
+# X-RAY
+xray_url = os.getenv("AWS_XRAY_URL")
+xray_recorder.configure(service='BACKEND-FLASK', dynamic_naming=xray_url)
+
+
 # Initialize tracing & an exporter which can send data to Honeycomb
 provider = TracerProvider()
 processor = BatchSpanProcessor(OTLPSpanExporter()) #Reads the environment vars specific to OTEL
@@ -35,6 +44,8 @@ trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
+# X-RAY
+XRayMiddleware(app, xray_recorder)
 
 # Initialize automatic instrumentation with Flask
 FlaskInstrumentor().instrument_app(app)
